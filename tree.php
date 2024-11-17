@@ -75,25 +75,41 @@ class BinarySearchTree
     }
 }
 
-function drawTree($node, $prefix = '', $isLeft = true) {
+function drawTree($node) {
+    $lines = [];
+    populateLines($node, $lines, 0, 0, 50); // 50 é a posição inicial, pode ser ajustada
+    foreach ($lines as $line) {
+        echo $line . "\n";
+    }
+}
+
+function populateLines($node, &$lines, $level, $position, $spacing) {
     if ($node === null) {
         return;
     }
 
-    echo $prefix;
+    // Garante que o nível atual exista no array de linhas
+    if (!isset($lines[$level])) {
+        $lines[$level] = str_repeat(" ", 100); // 100 caracteres de largura para o terminal
+    }
 
-    echo $isLeft ? "├── " : "└── ";
+    // Calcula a posição do valor no nível
+    $currentPos = $position + $spacing / 2;
+    $value = (string)$node->getValue();
 
-    echo $node->getValue() . "\n";
+    // Substitui a posição com o valor do nó
+    $lines[$level] = substr_replace($lines[$level], $value, (int)$currentPos, strlen($value));
 
-    $newPrefix = $prefix . ($isLeft ? "│   " : "    ");
+    // Espaçamento para os filhos
+    $nextSpacing = $spacing / 2;
 
-    drawTree($node->getLeft(), $newPrefix, true);
-    drawTree($node->getRight(), $newPrefix, false);
+    // Adiciona as conexões e os nós filhos
+    populateLines($node->getLeft(), $lines, $level + 1, $position, $nextSpacing);
+    populateLines($node->getRight(), $lines, $level + 1, $currentPos, $nextSpacing);
 }
 
 
-$node = new Node(10);
+$node = new Node(100);
 $tree = new BinarySearchTree($node);
 
 $tree->insertValue(12);
@@ -102,5 +118,7 @@ $tree->insertValue(9);
 $tree->insertValue(20);
 $tree->insertValue(21);
 $tree->insertValue(30);
+$tree->insertValue(4);
+$tree->insertValue(200);
 
 drawTree($tree->getRoot());
