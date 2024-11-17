@@ -55,12 +55,16 @@ class BinarySearchTree
         return $this->addNode($this->root, $value);
     }
 
+    public function searchValue(int $value): bool {
+        return $this->searchNode($this->root, $value);
+    }
+
     public function getRoot() 
     {
         return $this->root;
     }
 
-    private function addNode(Node $node, $value): Node
+    private function addNode(Node $node, int $value): Node
     {
         if ($value < $node->getValue()) {
             $leftNode = $node->getLeft() ?? new Node($value);
@@ -72,6 +76,25 @@ class BinarySearchTree
             return $node->setRight($this->addNode($rightNode, $value));
         }
         return $node;
+    }
+
+    private function searchNode(Node $node = null, int $value): bool
+    {
+        if (is_null($node)) {
+            return false;
+        }
+
+        if ($value == $node->getValue()) {
+            return true;
+        }
+
+        if ($value < $node->getValue()) {
+            return $this->searchNode($node->getLeft(), $value);
+        }
+
+        if ($value > $node->getValue()) {
+            return $this->searchNode($node->getRight(), $value);
+        }
     }
 }
 
@@ -122,3 +145,4 @@ $tree->insertValue(4);
 $tree->insertValue(200);
 
 drawTree($tree->getRoot());
+var_dump($tree->searchValue(201));
