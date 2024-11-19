@@ -66,14 +66,19 @@ class BinarySearchTree
         return $this->searchNode($this->root, $value);
     }
 
-    public function deleteValue(int $value): Node | null
+    public function deleteValue(int $value)
     {
-        return $this->deleteNode($this->root, $value);
+        $this->deleteNode($this->root, $value);
     }
 
     public function getRoot(): Node
     {
         return $this->root;
+    }
+
+    public function reverseTree() 
+    {
+        $this->reverse($this->root);
     }
 
     private function addNode(Node $node, int $value): Node
@@ -166,6 +171,30 @@ class BinarySearchTree
         
         return $node;
     }
+
+    public function reverse(Node $node) 
+    {
+        if(is_null($node)) {
+            return null;
+        }
+
+        $nodeLeft = $node->getLeft();
+        $nodeRight = $node->getRight();
+        
+        $node->setRight($nodeLeft);
+        $node->setLeft($nodeRight);
+
+        if (!is_null($nodeLeft)) {
+            $this->reverse($nodeLeft);
+        }
+
+        if (!is_null($nodeRight)) {
+            $this->reverse($nodeRight);
+        }
+
+        return $node;
+
+    }
 }
 
 function drawTree($node) {
@@ -217,7 +246,10 @@ $tree->insertValue(200);
 drawTree($tree->getRoot());
 var_dump($tree->searchValue(201));
 
-$tree->deleteValue(200);
+// $tree->deleteValue(200);
 // $tree->deleteValue(5);
+// $tree->deleteValue(12);
+
+$tree->reverseTree();
 
 drawTree($tree->getRoot());
